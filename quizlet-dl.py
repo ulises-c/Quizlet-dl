@@ -92,7 +92,7 @@ def scrape(url):
     slug = m.group(2) if m else tag
     stem = f"{uid}_{slug}_{date.today().isoformat()}"
 
-    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "exports")
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "exports", stem)
     os.makedirs(out_dir, exist_ok=True)
     json_path = os.path.join(out_dir, stem + ".json")
     tsv_path  = os.path.join(out_dir, stem + ".tsv")
