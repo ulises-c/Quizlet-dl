@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run
+# /// script
+# requires-python = ">=3.8"
+# dependencies = [
+#   "playwright",
+#   "playwright-stealth",
+# ]
+# ///
 import glob, json, os, re, shutil, sqlite3, sys, tempfile
 from datetime import date
 from playwright.sync_api import sync_playwright

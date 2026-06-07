@@ -4,25 +4,24 @@ Downloads a Quizlet study set and exports it as JSON and a tab-separated file re
 
 ## Requirements
 
-- Python 3.8+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) — handles Python and dependencies automatically
 - [Firefox](https://www.mozilla.org/en-US/firefox/new/) — must be installed and you must be logged into Quizlet in it
-- Playwright + playwright-stealth
 
 ```bash
-pip install playwright playwright-stealth
+uv run quizlet-dl.py --help  # installs deps on first run
 playwright install firefox
 ```
 
 ## Usage
 
 ```bash
-python quizlet-dl.py <url>
+uv run quizlet-dl.py <url>
 ```
 
 Example:
 
 ```bash
-python quizlet-dl.py "https://quizlet.com/123456789/my-set/"
+uv run quizlet-dl.py "https://quizlet.com/123456789/my-set/"
 ```
 
 Output files are saved in the same directory as the script:
