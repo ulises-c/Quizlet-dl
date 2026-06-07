@@ -1,2 +1,6 @@
 .railguard/
 .DS_Store
+.env
+.session.json
+*.json
+*.txt

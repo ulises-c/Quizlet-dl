@@ -1,24 +1,64 @@
 #!/usr/bin/env python3
-import json, os, sys
+import json, os, shutil, sqlite3, sys, tempfile
 from playwright.sync_api import sync_playwright
+from playwright_stealth import Stealth
+
+FF_PROFILE = os.path.expanduser(
+    "~/Library/Application Support/Firefox/Profiles/ihhi4t5l.default-release"
+)
+SAMESITE_MAP = {0: "None", 1: "Lax", 2: "Strict"}
+
+
+def _firefox_quizlet_cookies():
+    src = os.path.join(FF_PROFILE, "cookies.sqlite")
+    with tempfile.NamedTemporaryFile(suffix=".sqlite", delete=False) as tmp:
+        shutil.copy2(src, tmp.name)
+        tmp_path = tmp.name
+    try:
+        conn = sqlite3.connect(tmp_path)
+        rows = conn.execute(
+            "SELECT host, name, value, path, expiry, isSecure, isHttpOnly, sameSite "
+            "FROM moz_cookies WHERE host LIKE '%quizlet%'"
+        ).fetchall()
+        conn.close()
+    finally:
+        os.unlink(tmp_path)
+
+    cookies = []
+    for host, name, value, path, expiry, secure, http_only, same_site in rows:
+        c = {
+            "name": name,
+            "value": value,
+            "domain": host,
+            "path": path,
+            "secure": bool(secure),
+            "httpOnly": bool(http_only),
+            "sameSite": SAMESITE_MAP.get(same_site, "None"),
+        }
+        c["expires"] = int(expiry / 1000) if expiry and expiry > 0 else -1
+        cookies.append(c)
+    return cookies
 
 
 def scrape(url):
+    cookies = _firefox_quizlet_cookies()
+    print(f"Loaded {len(cookies)} Quizlet cookies from Firefox profile.")
+
     with sync_playwright() as p:
-        print("Opening browser (do not close the window)...")
-        browser = p.chromium.launch(channel="chrome", headless=False)
-        page = browser.new_page()
+        print("Opening browser...")
+        browser = p.firefox.launch(headless=False)
+        context = browser.new_context()
+        context.add_cookies(cookies)
+
+        page = context.new_page()
+        Stealth().use_sync(page)
 
         page.goto(url, timeout=30000)
-        page.wait_for_function(
-            "() => document.title && !document.title.includes('Just a moment')",
-            timeout=20000,
-        )
+        page.wait_for_load_state("domcontentloaded", timeout=30000)
         page.wait_for_timeout(2000)
         title = page.title().split("|")[0].strip()
         print(f"Loaded: {title}")
 
-        # Scroll to trigger lazy loading of all terms
         prev = 0
         for _ in range(40):
             page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -34,10 +74,9 @@ def scrape(url):
         browser.close()
 
     if len(all_texts) < 2:
-        print("ERROR: no card text found in the page.")
+        print("ERROR: no card text found.")
         return
 
-    # Elements alternate: term, definition, term, definition, ...
     cards = [(all_texts[i], all_texts[i + 1]) for i in range(0, len(all_texts) - 1, 2)]
     print(f"Extracted {len(cards)} cards")
 
@@ -61,5 +100,7 @@ def scrape(url):
 
 
 if __name__ == "__main__":
-    url = sys.argv[1] if len(sys.argv) > 1 else "https://quizlet.com/1016681673/emgt-330-flash-cards/"
-    scrape(url)
+    if len(sys.argv) < 2:
+        print("Usage: python quizlet-dl.py <url>", file=sys.stderr)
+        sys.exit(1)
+    scrape(sys.argv[1])
