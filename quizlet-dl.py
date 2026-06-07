@@ -7,7 +7,7 @@
 # ]
 # ///
 import glob, json, os, re, shutil, sqlite3, sys, tempfile
-from datetime import date
+from datetime import datetime
 from playwright.sync_api import sync_playwright
 from playwright_stealth import Stealth
 
@@ -102,7 +102,7 @@ def scrape(url):
     m = re.search(r"quizlet\.com/(\d+)/([^/?#]+)", url)
     uid  = m.group(1) if m else "unknown"
     slug = m.group(2) if m else tag
-    stem = f"{uid}_{slug}_{date.today().isoformat()}"
+    stem = f"{uid}_{slug}_{datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}"
 
     out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "exports", stem)
     os.makedirs(out_dir, exist_ok=True)

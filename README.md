@@ -8,25 +8,29 @@ Downloads a Quizlet study set and exports it as JSON and a tab-separated file re
 - [Firefox](https://www.mozilla.org/en-US/firefox/new/) — must be installed and logged into Quizlet; the script reads session cookies from your Firefox profile
 
 ```bash
-uv run quizlet-dl.py --help  # installs Python deps on first run
-playwright install firefox   # downloads a separate Playwright-managed browser binary
+make install  # installs Python deps and the Playwright-managed Firefox binary
 ```
 
 ## Usage
 
 ```bash
-uv run quizlet-dl.py <url>
+make run https://quizlet.com/123456789/my-set/
 ```
 
-Example:
+Or with an explicit variable if your shell strips the URL:
 
 ```bash
-uv run quizlet-dl.py "https://quizlet.com/123456789/my-set/"
+make run URL="https://quizlet.com/123456789/my-set/"
 ```
 
-Output files are saved in the same directory as the script:
-- `<set title>.json`
-- `<set title>.tsv` — Anki-ready (see below)
+Output is saved under `exports/` with a timestamped folder so re-downloads never overwrite:
+
+```
+exports/
+  123456789_my-set_2026-06-07T14-35-22/
+    123456789_my-set_2026-06-07T14-35-22.json
+    123456789_my-set_2026-06-07T14-35-22.tsv   ← Anki-ready
+```
 
 ## Importing into Anki
 
@@ -52,14 +56,11 @@ Each card is tagged with the sanitized set title (spaces replaced with underscor
 
 The script reads your Quizlet session cookies directly from your local Firefox profile — no login prompt, no password entry. As long as you're signed into Quizlet in Firefox, it just works.
 
-If you'd prefer to supply credentials instead, copy `.env.example` to `.env` and fill in your username and password. The script will attempt an automated login when no Firefox session is available.
-
 ## Limitations
 
 - **macOS only** — the Firefox profile path uses the macOS-specific `~/Library/Application Support/Firefox/Profiles/` location
 - **Text-only cards** — cards containing images, diagrams, or audio are silently dropped (only `.TermText` elements are scraped)
 - **Requires an active Quizlet login in Firefox** — no cookies means no access to private or member-only sets
-- **Automated login is unreliable** — Cloudflare bot detection blocks it; the `.env` credential fallback rarely succeeds
 - **Direct study set URLs only** — folders, classes, and premium-only content are not supported
 - **One tag per card** — all cards get the sanitized set title as their only tag; no per-card topic tags
 - **Anki Basic note type only** — exports front/back pairs; cloze deletions and custom note types are not supported
