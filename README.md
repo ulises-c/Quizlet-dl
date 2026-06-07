@@ -27,17 +27,27 @@ python quizlet-dl.py "https://quizlet.com/123456789/my-set/"
 
 Output files are saved in the same directory as the script:
 - `<set title>.json`
-- `<set title>.tsv` — Anki-ready (tab-separated, with headers and a tag matching the set title)
+- `<set title>.tsv` — Anki-ready (see below)
 
 ## Importing into Anki
 
-1. Open Anki and select the deck you want to import into
+1. Open Anki
 2. Go to **File → Import**
 3. Select the `.tsv` file
-4. Anki will detect the tab separator and map front/back/tags automatically
-5. Click **Import**
+4. Click **Import** — no configuration needed
 
-The TSV includes `#html:true` so any HTML in Quizlet cards renders correctly in Anki.
+The TSV includes [Anki file headers](https://docs.ankiweb.net/importing/text-files.html) (requires Anki 2.1.54+) that pre-configure the import automatically:
+
+| Header | Value | Effect |
+|--------|-------|--------|
+| `#separator:tab` | tab | Tab-delimited columns |
+| `#html:true` | true | Renders HTML in card fields |
+| `#deck` | Set title | Creates or routes to a matching deck |
+| `#notetype:Basic` | Basic | Uses Anki's built-in Basic note type (Front / Back) |
+| `#columns` | Front, Back, Tags | Maps columns to fields |
+| `#tags column:3` | 3 | Applies the third column as tags |
+
+Each card is tagged with the sanitized set title (spaces replaced with underscores) for easy filtering in the browser.
 
 ## How authentication works
 

@@ -95,6 +95,9 @@ def scrape(url):
     with open(tsv_path, "w", encoding="utf-8") as f:
         f.write("#separator:tab\n")
         f.write("#html:true\n")
+        f.write(f"#deck:{title}\n")
+        f.write("#notetype:Basic\n")
+        f.write("#columns:Front\tBack\tTags\n")
         f.write("#tags column:3\n")
         for term, defn in cards:
             f.write(f"{term}\t{defn}\t{tag}\n")
