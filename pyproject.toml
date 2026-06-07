@@ -2,8 +2,8 @@
 name = "quizlet-dl"
 version = "0.1.0"
 description = "Download Quizlet study sets as JSON and Anki-ready TSV"
-requires-python = ">=3.8"
+requires-python = "~=3.13.0"
 dependencies = [
-    "playwright",
-    "playwright-stealth",
+    "playwright>=1.60.0",
+    "playwright-stealth>=2.0.3",
 ]

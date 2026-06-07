@@ -4,7 +4,8 @@ Downloads a Quizlet study set and exports it as JSON and a tab-separated file re
 
 ## Requirements
 
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) — handles Python and dependencies automatically
+- Python 3.13.x
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) — handles dependencies automatically
 - [Firefox](https://www.mozilla.org/en-US/firefox/new/) — must be installed and logged into Quizlet; the script reads session cookies from your Firefox profile
 
 ```bash
