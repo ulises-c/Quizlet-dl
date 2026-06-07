@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import json, os, shutil, sqlite3, sys, tempfile
+import json, os, re, shutil, sqlite3, sys, tempfile
+from datetime import date
 from playwright.sync_api import sync_playwright
 from playwright_stealth import Stealth
 
@@ -85,9 +86,16 @@ def scrape(url):
     title = title.strip() or "quizlet_set"
 
     tag = title.replace(" ", "_")
-    out_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(out_dir, title + ".json")
-    tsv_path  = os.path.join(out_dir, title + ".tsv")
+
+    m = re.search(r"quizlet\.com/(\d+)/([^/?#]+)", url)
+    uid  = m.group(1) if m else "unknown"
+    slug = m.group(2) if m else tag
+    stem = f"{uid}_{slug}_{date.today().isoformat()}"
+
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "exports")
+    os.makedirs(out_dir, exist_ok=True)
+    json_path = os.path.join(out_dir, stem + ".json")
+    tsv_path  = os.path.join(out_dir, stem + ".tsv")
 
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump({"title": title, "cards": [{t: d} for t, d in cards]}, f, indent=2, ensure_ascii=False)

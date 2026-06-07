@@ -2,6 +2,4 @@
 .DS_Store
 .env
 .session.json
-*.json
-*.txt
-*.tsv
+exports/
