@@ -1,14 +1,41 @@
 # Quizlet-dl
-Quizlet-dl is a command-line program designed to download and export Quizlets in JSON format. 
 
-This program currently  supports URLs which point directly to a study set or to a user - folders, classes, and premium content are not currently supported.
+Downloads a Quizlet study set and exports it as JSON and TSV (tab-separated, Anki-compatible).
 
-# Usage
+## Requirements
 
-```python quizlet-dl.py [URL] [Save Directory]```
+- Python 3.8+
+- [Firefox](https://www.mozilla.org/en-US/firefox/new/) — must be installed and you must be logged into Quizlet in it
+- Playwright + playwright-stealth
 
-# Dependencies
-- Python 3.2+, which can be downloaded [here.](https://www.python.org/downloads/) It's recommended to check "Add Python 3.x to PATH" during installation.
-- Selenium, which can be installed by running: ```pip install selenium```
-- Firefox, which can be downloaded [here.](https://www.mozilla.org/en-US/firefox/new/)
-- Geckodriver, which is distributed with Quizlet-dl. In the case that an updated version is required, Geckodriver can be downloaded [here.](https://github.com/mozilla/geckodriver/releases) Please ensure geckodriver.exe is located in the same directory as quizlet-dl.py
+```bash
+pip install playwright playwright-stealth
+playwright install firefox
+```
+
+## Usage
+
+```bash
+python quizlet-dl.py <url>
+```
+
+Example:
+
+```bash
+python quizlet-dl.py "https://quizlet.com/123456789/my-set/"
+```
+
+Output files are saved in the same directory as the script:
+- `<set title>.json`
+- `<set title>.txt` (tab-separated, term → definition)
+
+## How authentication works
+
+The script reads your Quizlet session cookies directly from your local Firefox profile — no login prompt, no password entry. As long as you're signed into Quizlet in Firefox, it just works.
+
+If you'd prefer to supply credentials instead, copy `.env.example` to `.env` and fill in your username and password. The script will attempt an automated login when no Firefox session is available.
+
+## Limitations
+
+- Requires an active Quizlet session in Firefox on the same machine
+- Folders, classes, and premium-only content are not supported
