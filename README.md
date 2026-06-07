@@ -5,11 +5,11 @@ Downloads a Quizlet study set and exports it as JSON and a tab-separated file re
 ## Requirements
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) — handles Python and dependencies automatically
-- [Firefox](https://www.mozilla.org/en-US/firefox/new/) — must be installed and you must be logged into Quizlet in it
+- [Firefox](https://www.mozilla.org/en-US/firefox/new/) — must be installed and logged into Quizlet; the script reads session cookies from your Firefox profile
 
 ```bash
-uv run quizlet-dl.py --help  # installs deps on first run
-playwright install firefox
+uv run quizlet-dl.py --help  # installs Python deps on first run
+playwright install firefox   # downloads a separate Playwright-managed browser binary
 ```
 
 ## Usage
@@ -63,3 +63,7 @@ If you'd prefer to supply credentials instead, copy `.env.example` to `.env` and
 - **Direct study set URLs only** — folders, classes, and premium-only content are not supported
 - **One tag per card** — all cards get the sanitized set title as their only tag; no per-card topic tags
 - **Anki Basic note type only** — exports front/back pairs; cloze deletions and custom note types are not supported
+
+## Attribution
+
+Forked from [OxxoCodes/Quizlet-dl](https://github.com/OxxoCodes/Quizlet-dl). The scraping approach has been substantially rewritten — see [ATTRIBUTION.md](ATTRIBUTION.md) for details.
