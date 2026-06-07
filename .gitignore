@@ -4,3 +4,4 @@
 .session.json
 exports/
 .mypy_cache/
+.pytest_cache
