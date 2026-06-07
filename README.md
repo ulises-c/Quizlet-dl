@@ -57,7 +57,7 @@ If you'd prefer to supply credentials instead, copy `.env.example` to `.env` and
 
 ## Limitations
 
-- **macOS only** — the Firefox profile path is hardcoded and macOS-specific; also tied to a specific profile ID in the source
+- **macOS only** — the Firefox profile path uses the macOS-specific `~/Library/Application Support/Firefox/Profiles/` location
 - **Text-only cards** — cards containing images, diagrams, or audio are silently dropped (only `.TermText` elements are scraped)
 - **Requires an active Quizlet login in Firefox** — no cookies means no access to private or member-only sets
 - **Automated login is unreliable** — Cloudflare bot detection blocks it; the `.env` credential fallback rarely succeeds

@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-import json, os, re, shutil, sqlite3, sys, tempfile
+import glob, json, os, re, shutil, sqlite3, sys, tempfile
 from datetime import date
 from playwright.sync_api import sync_playwright
 from playwright_stealth import Stealth
 
-FF_PROFILE = os.path.expanduser(
-    "~/Library/Application Support/Firefox/Profiles/ihhi4t5l.default-release"
-)
+def _find_ff_profile():
+    pattern = os.path.expanduser(
+        "~/Library/Application Support/Firefox/Profiles/*.default-release"
+    )
+    matches = glob.glob(pattern)
+    if not matches:
+        raise RuntimeError("No Firefox default-release profile found.")
+    return matches[0]
 SAMESITE_MAP = {0: "None", 1: "Lax", 2: "Strict"}
 
 
 def _firefox_quizlet_cookies():
-    src = os.path.join(FF_PROFILE, "cookies.sqlite")
+    src = os.path.join(_find_ff_profile(), "cookies.sqlite")
     with tempfile.NamedTemporaryFile(suffix=".sqlite", delete=False) as tmp:
         shutil.copy2(src, tmp.name)
         tmp_path = tmp.name
