@@ -84,19 +84,23 @@ def scrape(url):
         title = title.replace(ch, "")
     title = title.strip() or "quizlet_set"
 
+    tag = title.replace(" ", "_")
     out_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(out_dir, title + ".json")
-    txt_path  = os.path.join(out_dir, title + ".txt")
+    tsv_path  = os.path.join(out_dir, title + ".tsv")
 
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump({"title": title, "cards": [{t: d} for t, d in cards]}, f, indent=2, ensure_ascii=False)
 
-    with open(txt_path, "w", encoding="utf-8") as f:
+    with open(tsv_path, "w", encoding="utf-8") as f:
+        f.write("#separator:tab\n")
+        f.write("#html:true\n")
+        f.write("#tags column:3\n")
         for term, defn in cards:
-            f.write(f"{term}\t{defn}\n")
+            f.write(f"{term}\t{defn}\t{tag}\n")
 
     print(f"  JSON → {json_path}")
-    print(f"  TSV  → {txt_path}")
+    print(f"  TSV  → {tsv_path} (Anki-ready)")
 
 
 if __name__ == "__main__":

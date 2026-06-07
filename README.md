@@ -1,6 +1,6 @@
 # Quizlet-dl
 
-Downloads a Quizlet study set and exports it as JSON and TSV (tab-separated, Anki-compatible).
+Downloads a Quizlet study set and exports it as JSON and a tab-separated file ready to import into [Anki](https://apps.ankiweb.net).
 
 ## Requirements
 
@@ -27,7 +27,17 @@ python quizlet-dl.py "https://quizlet.com/123456789/my-set/"
 
 Output files are saved in the same directory as the script:
 - `<set title>.json`
-- `<set title>.txt` (tab-separated, term → definition)
+- `<set title>.tsv` — Anki-ready (tab-separated, with headers and a tag matching the set title)
+
+## Importing into Anki
+
+1. Open Anki and select the deck you want to import into
+2. Go to **File → Import**
+3. Select the `.tsv` file
+4. Anki will detect the tab separator and map front/back/tags automatically
+5. Click **Import**
+
+The TSV includes `#html:true` so any HTML in Quizlet cards renders correctly in Anki.
 
 ## How authentication works
 

@@ -4,3 +4,4 @@
 .session.json
 *.json
 *.txt
+*.tsv
