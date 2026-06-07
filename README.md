@@ -57,5 +57,10 @@ If you'd prefer to supply credentials instead, copy `.env.example` to `.env` and
 
 ## Limitations
 
-- Requires an active Quizlet session in Firefox on the same machine
-- Folders, classes, and premium-only content are not supported
+- **macOS only** — the Firefox profile path is hardcoded and macOS-specific; also tied to a specific profile ID in the source
+- **Text-only cards** — cards containing images, diagrams, or audio are silently dropped (only `.TermText` elements are scraped)
+- **Requires an active Quizlet login in Firefox** — no cookies means no access to private or member-only sets
+- **Automated login is unreliable** — Cloudflare bot detection blocks it; the `.env` credential fallback rarely succeeds
+- **Direct study set URLs only** — folders, classes, and premium-only content are not supported
+- **One tag per card** — all cards get the sanitized set title as their only tag; no per-card topic tags
+- **Anki Basic note type only** — exports front/back pairs; cloze deletions and custom note types are not supported
